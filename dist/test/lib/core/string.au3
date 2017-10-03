@@ -36,3 +36,11 @@ func join($array, $glue)
 
 	return $result
 EndFunc
+
+Func starts_with($str, $end)
+	return StringLeft($str, StringLen($end)) == $end
+endfunc
+
+Func ends_with($str, $end)
+	return StringRight($str, StringLen($end)) == $end
+endfunc

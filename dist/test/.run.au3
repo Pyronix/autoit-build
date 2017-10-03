@@ -8,7 +8,7 @@ func boot()
 	$__PATH__ = @ScriptDir & '\'
 
 	for $i = 1 to $CmdLine[0]
-		if not startsWith($CmdLine[$i], '\') Then
+		if not starts_with($CmdLine[$i], '\') Then
 			$__PATH__ = $CmdLine[$i]
 			ExitLoop
 		EndIf
