@@ -52,6 +52,7 @@ func sql_close($handle = -1)
 EndFunc
 
 func sql_sanitize($str)
+	; ToDo
 	return $str
 EndFunc
 
