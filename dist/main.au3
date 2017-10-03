@@ -816,7 +816,7 @@ endfunc
 func compileFile($file)
 	$file = normalizePath($file, false)
 
-	say('Compiling File: ' & $file)
+	say('Compiling File: cd' & $file)
 
 	$raw = trimNoCompile(loadFile($file))
 

@@ -1,2 +1,3 @@
 #include-once
-#include "./test.au3"
+#include "./main.au3"
+#include "./sql_test.au3"
