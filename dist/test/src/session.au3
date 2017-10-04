@@ -18,12 +18,12 @@ EndFunc
 
 func get_session_connect($key)
 	$session = get_session($key)
-	if $session == null then retur Null
+	if $session == null then return Null
 	return hget($session, 'connect')
 EndFunc
 
 func get_session_session($key)
 	$session = get_session($key)
-	if $session == null then retur Null
+	if $session == null then return Null
 	return hget($session, 'session')
 EndFunc
