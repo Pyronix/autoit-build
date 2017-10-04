@@ -1,5 +1,5 @@
 func hash()
-	return array()
+	return _a_create('hash')
 EndFunc
 
 func h()
@@ -8,9 +8,9 @@ EndFunc
 
 func hget_index($hash, $key)
 	for $i = 0 to count($hash)-1
-		$pair = $hash[$i]
+		$pair = aget($hash, $i)
 
-		if $pair[0] == $key Then
+		if aget($pair, 0) == $key Then
 			return $i
 		EndIf
 	Next
@@ -20,9 +20,9 @@ EndFunc
 
 func hget_key($hash, $index)
 	if $index >= count($hash) then return Null
-	$pair = $hash[$index]
+	$pair = aget($hash, $index)
 
-	return $pair[0]
+	return aget($pair, 0)
 EndFunc
 
 func hget_keys($hash)
@@ -36,9 +36,9 @@ EndFunc
 
 func hget_value($hash, $index)
 	if $index >= count($hash) then return Null
-	$pair = $hash[$index]
+	$pair = aget($hash, $index)
 
-	return $pair[1]
+	return aget($pair, 1)
 EndFunc
 
 func hget_values($hash)
@@ -54,8 +54,8 @@ func hget($hash, $key, $default = Null)
 	$index = hget_index($hash, $key)
 
 	if $index <> Null then
-		$pair = $hash[$index]
-		return $pair[1]
+		$pair = aget($hash, $index)
+		return aget($pair, 1)
 	EndIf
 
 	return $default
@@ -65,9 +65,9 @@ func hset(byref $hash, $key, $value)
 	$index = hget_index($hash, $key)
 
 	if $index <> Null then
-		$pair = $hash[$index]
-		$pair[1] = $value
-		$hash[$index] = $pair
+		$pair = aget($hash, $index)
+		aset($pair, 1, $value)
+		aset($hash, $index, $pair)
 
 		return $hash
 	EndIf
@@ -81,18 +81,26 @@ func hset(byref $hash, $key, $value)
 	return $hash
 EndFunc
 
+func hhas($hash, $key)
+	return hget_index($hash, $key) <> Null
+EndFunc
+
 func h_to_string($hash)
 	$str = ''
 
 	$str &= indent_line('{', 0)
+	$entries = a()
+
 	for $i = 0 to count($hash)-1
 		$key = hget_key($hash, $i)
-		$value = hget_value($hash, $i)
+		$value = to_string(hget_value($hash, $i))
 
-		$str &= indent_line($key & ': ' & $value, 1)
+		push($entries, indent($key & ': ' & $value, 1))
 	Next
 
-	$str &= indent_line('}', 0)
+	$str &= join($entries, ',' & @CRLF) & @CRLF
+
+	$str &= indent('}', 0)
 
 	return $str
 EndFunc

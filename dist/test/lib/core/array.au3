@@ -1,13 +1,27 @@
 func count($array, $dimension = 1)
-	return UBound($array, $dimension)
+	return max(UBound($array, $dimension)-1, 0)
+EndFunc
+
+func aget($array, $index)
+	if $index < 0 or $index >= count($array) then return Null
+	return $array[$index+1]
+EndFunc
+
+func aset(byref $array, $index, $value)
+	if $index < 0 or $index >= count($array) then return False
+	$array[$index+1] = $value
+	return true
+EndFunc
+
+func aredim(byref $array, $size)
+	redim $array[$size+1]
 EndFunc
 
 func push(byref $array, $element)
 	$len = count($array)
 
-	ReDim $array[$len + 1]
-
-	$array[$len] = $element
+	aredim($array, $len+1)
+	aset($array, $len, $element)
 
 	return $len + 1
 EndFunc
@@ -16,9 +30,9 @@ func pop(byref $array)
 	$len = count($array)
 	if($len == 0) then return Null
 
-	$element = $array[$len - 1]
+	$element = aget($array, $len - 1)
 
-	ReDim $array[$len - 1]
+	aredim($array, $len-1)
 
 	return $element
 EndFunc
@@ -27,13 +41,13 @@ func shift(byref $array)
 	$len = count($array)
 	if($len == 0) then return Null
 
-	$element = $array[0]
+	$element =	aget($array, 0)
 
 	for $i = 0 to $len-2
-		$array[$i] = $array[$i+1]
+		aset($array, $i, aget($array, $i+1))
 	Next
 
-	redim $array[$len-1]
+	aredim($array, $len+-1)
 
 	return $element
 EndFunc
@@ -41,13 +55,13 @@ EndFunc
 func unshift(ByRef $array, $element)
 	$len = count($array)
 
-	redim $array[$len+1]
+	aredim($array, $len+1)
 
 	for $i = $len to 1 Step -1
-		$array[$i] = $array[$i - 1]
+		aset($array, $i, aget($array, $i-1))
 	Next
 
-	$array[0] = $element
+	aset($array, 0, $element)
 
 	return $len + 1
 EndFunc
@@ -62,12 +76,28 @@ func a_times($value, $amount = 1)
 	return $array
 EndFunc
 
-func array($1 = NULL, $2 = Null, $3 = Null, $4 = Null, $5 = Null, $6 = Null, $7 = Null, $8 = Null, $9 = Null, $10 = Null, $11 = Null, $12 = Null, $13 = Null, $14 = Null, $15 = Null, $16 = Null, $17 = Null, $18 = Null, $19 = Null, $20 = Null, $21 = Null, $22 = Null, $23 = Null, $24 = Null, $25 = Null, $26 = Null, $27 = Null, $28 = Null, $29 = Null, $30 = Null, $31 = Null, $32 = Null, $33 = Null, $34 = Null, $35 = Null, $36 = Null, $37 = Null, $38 = Null, $39 = Null, $40 = Null, $41 = Null, $42 = Null, $43 = Null, $44 = Null, $45 = Null, $46 = Null, $47 = Null, $48 = Null, $49 = Null, $50 = Null, $51 = Null, $52 = Null, $53 = Null, $54 = Null, $55 = Null, $56 = Null, $57 = Null, $58 = Null, $59 = Null, $60 = Null, $61 = Null, $62 = Null, $63 = Null, $64 = Null, $65 = Null, $66 = Null, $67 = Null, $68 = Null, $69 = Null, $70 = Null, $71 = Null, $72 = Null, $73 = Null, $74 = Null, $75 = Null, $76 = Null, $77 = Null, $78 = Null, $79 = Null, $80 = Null, $81 = Null, $82 = Null, $83 = Null, $84 = Null, $85 = Null, $86 = Null, $87 = Null, $88 = Null, $89 = Null, $90 = Null, $91 = Null, $92 = Null, $93 = Null, $94 = Null, $95 = Null, $96 = Null, $97 = Null, $98 = Null, $99 = Null, $100 = Null)
-	return _a_create($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $70, $71, $72, $73, $74, $75, $76, $77, $78, $79, $80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $100)
+func a_to_string($array)
+	$str = ''
+
+	$str &= indent_line('[', 0)
+	for $i = 0 to count($array)-1
+		$value = aget($array, $i)
+		$value = to_string($value)
+
+		$str &= indent_line($value & ',', 1)
+	Next
+
+	$str &= indent_line(']', 0)
+
+	return $str
 EndFunc
 
-func a($1 = NULL, $2 = Null, $3 = Null, $4 = Null, $5 = Null, $6 = Null, $7 = Null, $8 = Null, $9 = Null, $10 = Null, $11 = Null, $12 = Null, $13 = Null, $14 = Null, $15 = Null, $16 = Null, $17 = Null, $18 = Null, $19 = Null, $20 = Null, $21 = Null, $22 = Null, $23 = Null, $24 = Null, $25 = Null, $26 = Null, $27 = Null, $28 = Null, $29 = Null, $30 = Null, $31 = Null, $32 = Null, $33 = Null, $34 = Null, $35 = Null, $36 = Null, $37 = Null, $38 = Null, $39 = Null, $40 = Null, $41 = Null, $42 = Null, $43 = Null, $44 = Null, $45 = Null, $46 = Null, $47 = Null, $48 = Null, $49 = Null, $50 = Null, $51 = Null, $52 = Null, $53 = Null, $54 = Null, $55 = Null, $56 = Null, $57 = Null, $58 = Null, $59 = Null, $60 = Null, $61 = Null, $62 = Null, $63 = Null, $64 = Null, $65 = Null, $66 = Null, $67 = Null, $68 = Null, $69 = Null, $70 = Null, $71 = Null, $72 = Null, $73 = Null, $74 = Null, $75 = Null, $76 = Null, $77 = Null, $78 = Null, $79 = Null, $80 = Null, $81 = Null, $82 = Null, $83 = Null, $84 = Null, $85 = Null, $86 = Null, $87 = Null, $88 = Null, $89 = Null, $90 = Null, $91 = Null, $92 = Null, $93 = Null, $94 = Null, $95 = Null, $96 = Null, $97 = Null, $98 = Null, $99 = Null, $100 = Null)
-	return array($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $70, $71, $72, $73, $74, $75, $76, $77, $78, $79, $80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $100)
+func array($2 = Null, $3 = Null, $4 = Null, $5 = Null, $6 = Null, $7 = Null, $8 = Null, $9 = Null, $10 = Null, $11 = Null, $12 = Null, $13 = Null, $14 = Null, $15 = Null, $16 = Null, $17 = Null, $18 = Null, $19 = Null, $20 = Null, $21 = Null, $22 = Null, $23 = Null, $24 = Null, $25 = Null, $26 = Null, $27 = Null, $28 = Null, $29 = Null, $30 = Null, $31 = Null, $32 = Null, $33 = Null, $34 = Null, $35 = Null, $36 = Null, $37 = Null, $38 = Null, $39 = Null, $40 = Null, $41 = Null, $42 = Null, $43 = Null, $44 = Null, $45 = Null, $46 = Null, $47 = Null, $48 = Null, $49 = Null, $50 = Null, $51 = Null, $52 = Null, $53 = Null, $54 = Null, $55 = Null, $56 = Null, $57 = Null, $58 = Null, $59 = Null, $60 = Null, $61 = Null, $62 = Null, $63 = Null, $64 = Null, $65 = Null, $66 = Null, $67 = Null, $68 = Null, $69 = Null, $70 = Null, $71 = Null, $72 = Null, $73 = Null, $74 = Null, $75 = Null, $76 = Null, $77 = Null, $78 = Null, $79 = Null, $80 = Null, $81 = Null, $82 = Null, $83 = Null, $84 = Null, $85 = Null, $86 = Null, $87 = Null, $88 = Null, $89 = Null, $90 = Null, $91 = Null, $92 = Null, $93 = Null, $94 = Null, $95 = Null, $96 = Null, $97 = Null, $98 = Null, $99 = Null, $100 = Null)
+	return _a_create('array', $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $70, $71, $72, $73, $74, $75, $76, $77, $78, $79, $80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $100)
+EndFunc
+
+func a($2 = Null, $3 = Null, $4 = Null, $5 = Null, $6 = Null, $7 = Null, $8 = Null, $9 = Null, $10 = Null, $11 = Null, $12 = Null, $13 = Null, $14 = Null, $15 = Null, $16 = Null, $17 = Null, $18 = Null, $19 = Null, $20 = Null, $21 = Null, $22 = Null, $23 = Null, $24 = Null, $25 = Null, $26 = Null, $27 = Null, $28 = Null, $29 = Null, $30 = Null, $31 = Null, $32 = Null, $33 = Null, $34 = Null, $35 = Null, $36 = Null, $37 = Null, $38 = Null, $39 = Null, $40 = Null, $41 = Null, $42 = Null, $43 = Null, $44 = Null, $45 = Null, $46 = Null, $47 = Null, $48 = Null, $49 = Null, $50 = Null, $51 = Null, $52 = Null, $53 = Null, $54 = Null, $55 = Null, $56 = Null, $57 = Null, $58 = Null, $59 = Null, $60 = Null, $61 = Null, $62 = Null, $63 = Null, $64 = Null, $65 = Null, $66 = Null, $67 = Null, $68 = Null, $69 = Null, $70 = Null, $71 = Null, $72 = Null, $73 = Null, $74 = Null, $75 = Null, $76 = Null, $77 = Null, $78 = Null, $79 = Null, $80 = Null, $81 = Null, $82 = Null, $83 = Null, $84 = Null, $85 = Null, $86 = Null, $87 = Null, $88 = Null, $89 = Null, $90 = Null, $91 = Null, $92 = Null, $93 = Null, $94 = Null, $95 = Null, $96 = Null, $97 = Null, $98 = Null, $99 = Null, $100 = Null)
+	return array($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $70, $71, $72, $73, $74, $75, $76, $77, $78, $79, $80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $100)
 EndFunc
 
 Func _a_create($1 = NULL, $2 = Null, $3 = Null, $4 = Null, $5 = Null, $6 = Null, $7 = Null, $8 = Null, $9 = Null, $10 = Null, $11 = Null, $12 = Null, $13 = Null, $14 = Null, $15 = Null, $16 = Null, $17 = Null, $18 = Null, $19 = Null, $20 = Null, $21 = Null, $22 = Null, $23 = Null, $24 = Null, $25 = Null, $26 = Null, $27 = Null, $28 = Null, $29 = Null, $30 = Null, $31 = Null, $32 = Null, $33 = Null, $34 = Null, $35 = Null, $36 = Null, $37 = Null, $38 = Null, $39 = Null, $40 = Null, $41 = Null, $42 = Null, $43 = Null, $44 = Null, $45 = Null, $46 = Null, $47 = Null, $48 = Null, $49 = Null, $50 = Null, $51 = Null, $52 = Null, $53 = Null, $54 = Null, $55 = Null, $56 = Null, $57 = Null, $58 = Null, $59 = Null, $60 = Null, $61 = Null, $62 = Null, $63 = Null, $64 = Null, $65 = Null, $66 = Null, $67 = Null, $68 = Null, $69 = Null, $70 = Null, $71 = Null, $72 = Null, $73 = Null, $74 = Null, $75 = Null, $76 = Null, $77 = Null, $78 = Null, $79 = Null, $80 = Null, $81 = Null, $82 = Null, $83 = Null, $84 = Null, $85 = Null, $86 = Null, $87 = Null, $88 = Null, $89 = Null, $90 = Null, $91 = Null, $92 = Null, $93 = Null, $94 = Null, $95 = Null, $96 = Null, $97 = Null, $98 = Null, $99 = Null, $100 = Null)

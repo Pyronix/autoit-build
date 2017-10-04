@@ -3,7 +3,11 @@
 func main($cli)
 	say('Starting in: ' & @ScriptDir)
 	say('Working in: ' & $__PATH__)
-	return sql_test()
+
+	; execute specs - ensures array & hash are working correctly
+	specs()
+
+	return	getch()
 
 	while True
 		say('> ' & $__PATH__)

@@ -5,5 +5,7 @@
 #include "./cli.au3"
 #include "./console.au3"
 #include "./hash.au3"
+#include "./math.au3"
 #include "./path.au3"
 #include "./string.au3"
+#include "./type.au3"

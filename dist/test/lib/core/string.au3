@@ -12,7 +12,14 @@ func line($str)
 EndFunc
 
 func indent($str, $amount = 1)
-	return s_times('  ', $amount) & $str
+	$lines = split($str, @CRLF, $STR_ENTIRESPLIT)
+
+	for $i = 0 to count($lines)-1
+		aset($lines, $i, s_times('  ', $amount) & aget($lines, $i))
+	Next
+
+	$str = join($lines, @CRLF)
+	return $str
 EndFunc
 
 func indent_line($str, $amount = 1)
@@ -21,7 +28,8 @@ EndFunc
 
 func split($string, $delimters, $flag = 0)
 	$array = StringSplit($string, $delimters, $flag)
-	shift($array)
+	; make it to an 'array'
+	$array[0] = 'array'
 
 	return $array
 EndFunc
@@ -31,7 +39,7 @@ func join($array, $glue)
 
 	for $i = 0 to count($array)-1
 		if($i > 0) then $result &= $glue
-		$result &= $array[$i]
+		$result &=aget($array, $i)
 	Next
 
 	return $result
